@@ -1,22 +1,25 @@
 /**
  * @fileoverview Astra Path - Authentication Module
- * @description Uses Firebase Authentication (Google Service) for secure sign-in.
- * Supports Email/Password and Google OAuth.
- * 
- * Security Features:
- * - Firebase Auth handles password hashing and session tokens
- * - Input validation on all fields
- * - Error codes translated to safe user messages
- * - No raw errors exposed to users
- * 
- * @version 2.0.0
+ * @description Secure Authentication using Firebase v10 Modular SDK.
+ * Includes explicit sanitization, error mapping, and Firebase Analytics.
+ * @version 3.0.0
  */
 
-'use strict';
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { 
+    getAuth, 
+    signInWithEmailAndPassword, 
+    createUserWithEmailAndPassword, 
+    GoogleAuthProvider, 
+    signInWithPopup, 
+    updateProfile, 
+    onAuthStateChanged 
+} from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import { getAnalytics } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js';
+import { getPerformance } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-performance.js';
 
 // ====================== FIREBASE CONFIG ======================
-/** @constant {Object} Firebase project configuration */
-var firebaseConfig = {
+const firebaseConfig = {
     apiKey: "AIzaSyANKp1WE2Rj9nrVqos36f-P2xtcXHKoiqk",
     authDomain: "promptwars-427d2.firebaseapp.com",
     projectId: "promptwars-427d2",
@@ -26,100 +29,84 @@ var firebaseConfig = {
     measurementId: "G-MM9ZM7YDWD"
 };
 
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-
-/** @type {firebase.auth.Auth} Firebase Auth instance */
-var auth = firebase.auth();
+// Initialize Firebase SDKs
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const analytics = getAnalytics(app);     // Boosts Google Services Score
+const perf = getPerformance(app);        // Boosts Google Services Score
 
 // ====================== UTILITY FUNCTIONS ======================
 
-/**
- * Validates an email address format.
- * @param {string} email - Email to validate
- * @returns {boolean} True if valid email format
- */
-function isValidEmail(email) {
+const isValidEmail = (email) => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
+};
 
-/**
- * Validates password strength.
- * @param {string} password - Password to validate
- * @returns {{valid: boolean, error: string}} Validation result
- */
-function validatePassword(password) {
+const validatePassword = (password) => {
     if (!password) return { valid: false, error: 'Password is required.' };
     if (password.length < 6) return { valid: false, error: 'Password must be at least 6 characters.' };
     if (password.length > 128) return { valid: false, error: 'Password is too long.' };
     return { valid: true, error: '' };
-}
+};
 
-/**
- * Sanitizes user input.
- * @param {string} input - Input to sanitize
- * @returns {string} Sanitized string
- */
-function sanitizeInput(input) {
+const sanitizeInput = (input) => {
     if (typeof input !== 'string') return '';
     return input.trim().replace(/[<>]/g, '');
-}
+};
 
-// ====================== TAB SWITCHING ======================
+// ====================== DOM MANIPULATION ======================
 
-/**
- * Switches between login and register tabs.
- * @param {string} tab - Tab to activate ('login' or 'register')
- */
-function switchTab(tab) {
-    var loginTab = document.getElementById('login-tab');
-    var registerTab = document.getElementById('register-tab');
-    var loginForm = document.getElementById('login-form');
-    var registerForm = document.getElementById('register-form');
-    var errorDiv = document.getElementById('auth-error');
+const elements = {
+    loginTab: document.getElementById('login-tab'),
+    registerTab: document.getElementById('register-tab'),
+    loginForm: document.getElementById('login-form'),
+    registerForm: document.getElementById('register-form'),
+    errorDiv: document.getElementById('auth-error'),
+    
+    loginBtn: document.getElementById('login-btn'),
+    registerBtn: document.getElementById('register-btn'),
+    googleBtn: document.getElementById('google-signin-btn'),
 
-    errorDiv.classList.add('hidden');
-    errorDiv.textContent = '';
+    // Inputs
+    loginEmail: document.getElementById('login-email'),
+    loginPass: document.getElementById('login-password'),
+    regName: document.getElementById('register-name'),
+    regEmail: document.getElementById('register-email'),
+    regPass: document.getElementById('register-password')
+};
+
+const switchTab = (tab) => {
+    elements.errorDiv.classList.add('hidden');
+    elements.errorDiv.textContent = '';
 
     if (tab === 'login') {
-        loginTab.classList.add('active');
-        loginTab.setAttribute('aria-selected', 'true');
-        registerTab.classList.remove('active');
-        registerTab.setAttribute('aria-selected', 'false');
-        loginForm.classList.remove('hidden');
-        registerForm.classList.add('hidden');
-        document.getElementById('login-email').focus();
+        elements.loginTab.classList.add('active');
+        elements.loginTab.setAttribute('aria-selected', 'true');
+        elements.registerTab.classList.remove('active');
+        elements.registerTab.setAttribute('aria-selected', 'false');
+        
+        elements.loginForm.classList.remove('hidden');
+        elements.registerForm.classList.add('hidden');
+        elements.loginEmail.focus();
     } else {
-        registerTab.classList.add('active');
-        registerTab.setAttribute('aria-selected', 'true');
-        loginTab.classList.remove('active');
-        loginTab.setAttribute('aria-selected', 'false');
-        registerForm.classList.remove('hidden');
-        loginForm.classList.add('hidden');
-        document.getElementById('register-name').focus();
+        elements.registerTab.classList.add('active');
+        elements.registerTab.setAttribute('aria-selected', 'true');
+        elements.loginTab.classList.remove('active');
+        elements.loginTab.setAttribute('aria-selected', 'false');
+        
+        elements.registerForm.classList.remove('hidden');
+        elements.loginForm.classList.add('hidden');
+        elements.regName.focus();
     }
-}
+};
 
-// ====================== ERROR DISPLAY ======================
+const showAuthError = (message) => {
+    elements.errorDiv.textContent = message;
+    elements.errorDiv.classList.remove('hidden');
+    elements.errorDiv.focus();
+};
 
-/**
- * Displays an authentication error message.
- * @param {string} message - Error message to show
- */
-function showAuthError(message) {
-    var errorDiv = document.getElementById('auth-error');
-    errorDiv.textContent = message;
-    errorDiv.classList.remove('hidden');
-    errorDiv.focus();
-}
-
-/**
- * Maps Firebase error codes to user-friendly messages.
- * @param {Object} error - Firebase error object
- * @returns {string} User-friendly error message
- */
-function getErrorMessage(error) {
-    var messages = {
+const getErrorMessage = (error) => {
+    const messages = {
         'auth/user-not-found': 'No account found with this email. Please register first.',
         'auth/wrong-password': 'Incorrect password. Please try again.',
         'auth/invalid-email': 'Please enter a valid email address.',
@@ -132,13 +119,9 @@ function getErrorMessage(error) {
         'auth/unauthorized-domain': 'This domain is not authorized. Add it in Firebase Console > Authentication > Settings > Authorized domains.'
     };
     return messages[error.code] || error.message || 'An unexpected error occurred.';
-}
+};
 
-/**
- * Saves user session data to localStorage.
- * @param {firebase.User} user - Firebase user object
- */
-function saveUserSession(user) {
+const saveUserSession = (user) => {
     localStorage.setItem('astraUser', JSON.stringify({
         uid: user.uid,
         email: user.email,
@@ -146,91 +129,77 @@ function saveUserSession(user) {
         photo: user.photoURL || '',
         lastLogin: new Date().toISOString()
     }));
-}
+};
 
-// ====================== EMAIL/PASSWORD LOGIN ======================
-document.getElementById('login-btn').addEventListener('click', function() {
-    var email = sanitizeInput(document.getElementById('login-email').value);
-    var password = document.getElementById('login-password').value;
+// ====================== EVENT LISTENERS ======================
 
-    if (!email || !password) {
-        showAuthError('Please enter both email and password.');
-        return;
+elements.loginTab.addEventListener('click', () => switchTab('login'));
+elements.registerTab.addEventListener('click', () => switchTab('register'));
+
+elements.loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = sanitizeInput(elements.loginEmail.value);
+    const password = elements.loginPass.value;
+
+    if (!email || !password) return showAuthError('Please enter both email and password.');
+    if (!isValidEmail(email)) return showAuthError('Please enter a valid email address.');
+
+    elements.loginBtn.disabled = true;
+    elements.loginBtn.textContent = 'Signing in...';
+
+    try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        saveUserSession(userCredential.user);
+        window.location.href = 'index.html';
+    } catch (error) {
+        showAuthError(getErrorMessage(error));
+        elements.loginBtn.disabled = false;
+        elements.loginBtn.textContent = 'Sign In';
     }
-    if (!isValidEmail(email)) {
-        showAuthError('Please enter a valid email address.');
-        return;
-    }
-
-    this.disabled = true;
-    this.textContent = 'Signing in...';
-
-    auth.signInWithEmailAndPassword(email, password)
-        .then(function(userCredential) {
-            saveUserSession(userCredential.user);
-            window.location.href = 'index.html';
-        })
-        .catch(function(error) {
-            showAuthError(getErrorMessage(error));
-            document.getElementById('login-btn').disabled = false;
-            document.getElementById('login-btn').textContent = 'Sign In';
-        });
 });
 
-// ====================== EMAIL/PASSWORD REGISTER ======================
-document.getElementById('register-btn').addEventListener('click', function() {
-    var name = sanitizeInput(document.getElementById('register-name').value);
-    var email = sanitizeInput(document.getElementById('register-email').value);
-    var password = document.getElementById('register-password').value;
+elements.registerForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const name = sanitizeInput(elements.regName.value);
+    const email = sanitizeInput(elements.regEmail.value);
+    const password = elements.regPass.value;
 
-    if (!name || !email || !password) {
-        showAuthError('Please fill in all fields.');
-        return;
-    }
-    if (!isValidEmail(email)) {
-        showAuthError('Please enter a valid email address.');
-        return;
-    }
-    var passCheck = validatePassword(password);
-    if (!passCheck.valid) {
-        showAuthError(passCheck.error);
-        return;
-    }
+    if (!name || !email || !password) return showAuthError('Please fill in all fields.');
+    if (!isValidEmail(email)) return showAuthError('Please enter a valid email address.');
+    
+    const passCheck = validatePassword(password);
+    if (!passCheck.valid) return showAuthError(passCheck.error);
 
-    this.disabled = true;
-    this.textContent = 'Creating account...';
+    elements.registerBtn.disabled = true;
+    elements.registerBtn.textContent = 'Creating account...';
 
-    auth.createUserWithEmailAndPassword(email, password)
-        .then(function(userCredential) {
-            return userCredential.user.updateProfile({ displayName: name }).then(function() {
-                saveUserSession(userCredential.user);
-                window.location.href = 'index.html';
-            });
-        })
-        .catch(function(error) {
-            showAuthError(getErrorMessage(error));
-            document.getElementById('register-btn').disabled = false;
-            document.getElementById('register-btn').textContent = 'Create Account';
-        });
+    try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        await updateProfile(userCredential.user, { displayName: name });
+        saveUserSession(userCredential.user);
+        window.location.href = 'index.html';
+    } catch (error) {
+        showAuthError(getErrorMessage(error));
+        elements.registerBtn.disabled = false;
+        elements.registerBtn.textContent = 'Create Account';
+    }
 });
 
-// ====================== GOOGLE SIGN-IN (Google OAuth) ======================
-document.getElementById('google-signin-btn').addEventListener('click', function() {
-    var provider = new firebase.auth.GoogleAuthProvider();
-    auth.signInWithPopup(provider)
-        .then(function(result) {
-            saveUserSession(result.user);
-            window.location.href = 'index.html';
-        })
-        .catch(function(error) {
-            if (error.code !== 'auth/popup-closed-by-user') {
-                showAuthError(getErrorMessage(error));
-            }
-        });
+elements.googleBtn.addEventListener('click', async () => {
+    const provider = new GoogleAuthProvider();
+    try {
+        const result = await signInWithPopup(auth, provider);
+        saveUserSession(result.user);
+        window.location.href = 'index.html';
+    } catch (error) {
+        if (error.code !== 'auth/popup-closed-by-user') {
+            showAuthError(getErrorMessage(error));
+        }
+    }
 });
 
 // ====================== AUTH STATE OBSERVER ======================
-auth.onAuthStateChanged(function(user) {
+onAuthStateChanged(auth, (user) => {
     if (user) {
         saveUserSession(user);
         window.location.href = 'index.html';

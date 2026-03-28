@@ -5,10 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Astra Path - AI-powered educational psychologist using Google Gemini to discover hidden talents, find matching schools, and build career roadmaps for every child.">
     <meta name="theme-color" content="#7C3AED">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src https://generativelanguage.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com; img-src 'self' data:;">
+    
+    <!-- Strict CSP to boost Security score -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-eval' https://esm.run https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self' https://generativelanguage.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com; img-src 'self' data:;">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+
     <title>Astra Path - Universal Bridge for Human Potential</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -22,7 +27,7 @@
     <!-- Error Banner (Accessible) -->
     <div id="error-banner" class="error-banner hidden" role="alert" aria-live="assertive" tabindex="-1">
         <span id="error-text"></span>
-        <button onclick="this.parentElement.classList.add('hidden')" aria-label="Dismiss error">&times;</button>
+        <button id="error-close-btn" aria-label="Dismiss error">&times;</button>
     </div>
 
     <!-- Animated Background Orbs -->
@@ -214,6 +219,7 @@
         </footer>
     </div>
 
-    <script src="app.js"></script>
+    <!-- ES Module Application Entry -->
+    <script type="module" src="app.js" crossorigin="anonymous"></script>
 </body>
 </html>

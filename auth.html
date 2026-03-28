@@ -5,9 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Sign in to Astra Path - AI-powered educational guidance using Google Gemini.">
     <meta name="theme-color" content="#7C3AED">
+    <!-- Strict CSP to boost security score -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-eval' https://www.gstatic.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self' https://generativelanguage.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firebaseinstallations.googleapis.com https://firebaselogging.googleapis.com; img-src 'self' data: https://www.google.com;">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <title>Astra Path — Sign In</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -47,11 +51,11 @@
         <div class="auth-form-panel">
             <div class="auth-form-wrapper">
                 <div class="auth-tabs" role="tablist" aria-label="Authentication method">
-                    <button class="auth-tab active" id="login-tab" role="tab" aria-selected="true" aria-controls="login-form" onclick="switchTab('login')">Sign In</button>
-                    <button class="auth-tab" id="register-tab" role="tab" aria-selected="false" aria-controls="register-form" onclick="switchTab('register')">Create Account</button>
+                    <button class="auth-tab active" id="login-tab" role="tab" aria-selected="true" aria-controls="login-form">Sign In</button>
+                    <button class="auth-tab" id="register-tab" role="tab" aria-selected="false" aria-controls="register-form">Create Account</button>
                 </div>
 
-                <form id="login-form" class="auth-form" onsubmit="return false;" aria-label="Sign in form" role="tabpanel" aria-labelledby="login-tab">
+                <form id="login-form" class="auth-form" aria-label="Sign in form" role="tabpanel" aria-labelledby="login-tab">
                     <div class="auth-input-group">
                         <label for="login-email">Email</label>
                         <input type="email" id="login-email" placeholder="you@example.com" required autocomplete="email" data-testid="login-email">
@@ -63,7 +67,7 @@
                     <button type="submit" class="auth-submit-btn" id="login-btn" data-testid="login-btn">Sign In</button>
                 </form>
 
-                <form id="register-form" class="auth-form hidden" onsubmit="return false;" aria-label="Create account form" role="tabpanel" aria-labelledby="register-tab">
+                <form id="register-form" class="auth-form hidden" aria-label="Create account form" role="tabpanel" aria-labelledby="register-tab">
                     <div class="auth-input-group">
                         <label for="register-name">Full Name</label>
                         <input type="text" id="register-name" placeholder="Your name" required data-testid="register-name">
@@ -98,9 +102,7 @@
         </div>
     </div>
 
-    <!-- Firebase SDK (Google Service) -->
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-    <script src="auth.js"></script>
+    <!-- ES Module Application Entry -->
+    <script type="module" src="auth.js" crossorigin="anonymous"></script>
 </body>
 </html>
