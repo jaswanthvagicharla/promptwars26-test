@@ -4,38 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Astra Path - Universal Bridge for Human Potential</title>
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="app-container">
-        <!-- Settings Modal for API Key -->
-        <div id="settings-modal" class="modal">
-            <div class="modal-content">
-                <h2>Welcome to Astra Path</h2>
-                <p>To power this experience, please enter your Google Gemini API key. This key only stays in your browser.</p>
-                <div class="input-group">
-                    <label for="api-key">Gemini Multimodal API Key</label>
-                    <input type="password" id="api-key" placeholder="AIzaSy...">
-                </div>
-                <button id="save-key-btn" class="primary-btn">Start Bridging Potential</button>
-            </div>
-        </div>
+    <!-- Animated Background Orbs -->
+    <div class="bg-orbs">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
 
-        <header>
-            <div class="header-logo">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <div class="app-container">
+        <!-- Top Navigation Bar -->
+        <nav class="top-nav">
+            <div class="nav-brand">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M12 2L2 22l10-4 10 4L12 2z"></path>
                     <path d="m12 18 10 4"></path>
                     <path d="M2 22l10-4"></path>
                 </svg>
                 <h1>Astra Path</h1>
             </div>
-            <p class="subtitle">The Universal Bridge for Human Potential.</p>
-        </header>
+            <div class="nav-user">
+                <span class="nav-user-name" id="nav-user-name">Welcome</span>
+                <button class="logout-btn" id="logout-btn">Sign Out</button>
+            </div>
+        </nav>
+
 
         <main class="main-content">
             <!-- INPUT SECTION -->
@@ -79,11 +77,10 @@
             <section id="output-section" class="hidden">
                 <div class="top-banner">
                     <h2 class="superpower-badge" id="superpower-text">Creative Builder</h2>
-                    <p class="big-picture" id="big-picture-text">They learn by feeling the world in their hands. While traditional math might be tough, they are engineering marvels waiting to happen.</p>
+                    <p class="big-picture" id="big-picture-text">They learn by feeling the world in their hands.</p>
                 </div>
 
                 <div class="traffic-lights-container">
-                    <!-- Green -->
                     <div class="traffic-card green">
                         <div class="traffic-header">
                             <span class="dot green-dot"></span>
@@ -92,7 +89,6 @@
                         </div>
                         <ul id="green-list"></ul>
                     </div>
-                    <!-- Yellow -->
                     <div class="traffic-card yellow">
                         <div class="traffic-header">
                             <span class="dot yellow-dot"></span>
@@ -101,7 +97,6 @@
                         </div>
                         <ul id="yellow-list"></ul>
                     </div>
-                    <!-- Red -->
                     <div class="traffic-card red">
                         <div class="traffic-header">
                             <span class="dot red-dot"></span>
@@ -115,9 +110,7 @@
                 <div class="actions-section">
                     <h2>Top 3 Actions to Take Today</h2>
                     <p class="subtitle">Simple steps that will change their future.</p>
-                    <div class="actions-list" id="actions-list">
-                        <!-- Action cards injected here via JS -->
-                    </div>
+                    <div class="actions-list" id="actions-list"></div>
                 </div>
 
                 <div class="verification-section">
@@ -129,19 +122,49 @@
                     </div>
                     <div class="verify-content">
                         <h4>Guardian Verification Check</h4>
-                        <p id="verify-text">Cross-referenced school promise against their recent teacher turnover rate.</p>
+                        <p id="verify-text"></p>
                     </div>
                 </div>
 
-                <button id="reset-btn" class="secondary-btn outline full-width mt-4">Analyze Another Path</button>
+                <!-- SCHOOL MATCHER -->
+                <div class="card fade-in" id="school-matcher-form" style="margin-top: 3rem; border-top: 3px solid var(--accent-primary);">
+                    <h2>Step 2: Find the Perfect School</h2>
+                    <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Now that we know their superpower, let's find the right environment. We'll search Google Reviews to verify safety and budget match.</p>
+
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem;">
+                        <div class="input-group" style="flex: 1; min-width: 200px; margin-bottom: 0;">
+                            <label for="budget-input">Parent's Budget</label>
+                            <input type="text" id="budget-input" placeholder="e.g. 1 Lakh per year">
+                        </div>
+                        <div class="input-group" style="flex: 1; min-width: 200px; margin-bottom: 0;">
+                            <label for="location-input">City / Area</label>
+                            <input type="text" id="location-input" placeholder="e.g. Hyderabad">
+                        </div>
+                    </div>
+                    <button id="find-schools-btn" class="primary-btn full-width">Search Verified Schools via Google</button>
+
+                    <div id="school-loading-state" class="hidden" style="text-align: center; margin-top: 2rem;">
+                        <div class="spinner" style="width: 32px; height: 32px; border-width: 3px;"></div>
+                        <p>Searching Google Reviews for safe schools...</p>
+                    </div>
+                </div>
+
+                <!-- SCHOOL RESULTS -->
+                <div id="school-results-section" class="hidden" style="margin-top: 3rem;">
+                    <h2>Recommended Schools</h2>
+                    <div class="actions-list" id="schools-list" style="margin-bottom: 2rem;"></div>
+
+                    <div class="card" style="background: var(--gradient-brand); border: none;">
+                        <h2 style="color: white; margin-bottom: 0.5rem;">10-Year Career Horizon</h2>
+                        <p id="career-guide-text" style="color: rgba(255,255,255,0.85); line-height: 1.8;">Based on their interests, here is what the future might look like...</p>
+                    </div>
+                </div>
+
+                <button id="reset-btn" class="secondary-btn full-width mt-4">Start Over with Another Child</button>
             </section>
         </main>
     </div>
 
-    <!-- Audio Player for Voice Synthesizer -->
-    <div style="display: none;">
-        <audio id="tts-audio"></audio>
-    </div>
     <script src="app.js"></script>
 </body>
 </html>
