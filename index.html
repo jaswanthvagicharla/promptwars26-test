@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Astra Path - Universal Bridge for Human Potential</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Settings Modal for API Key -->
+        <div id="settings-modal" class="modal">
+            <div class="modal-content">
+                <h2>Welcome to Astra Path</h2>
+                <p>To power this experience, please enter your Google Gemini API key. This key only stays in your browser.</p>
+                <div class="input-group">
+                    <label for="api-key">Gemini Multimodal API Key</label>
+                    <input type="password" id="api-key" placeholder="AIzaSy...">
+                </div>
+                <button id="save-key-btn" class="primary-btn">Start Bridging Potential</button>
+            </div>
+        </div>
+
+        <header>
+            <div class="header-logo">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2L2 22l10-4 10 4L12 2z"></path>
+                    <path d="m12 18 10 4"></path>
+                    <path d="M2 22l10-4"></path>
+                </svg>
+                <h1>Astra Path</h1>
+            </div>
+            <p class="subtitle">The Universal Bridge for Human Potential.</p>
+        </header>
+
+        <main class="main-content">
+            <!-- INPUT SECTION -->
+            <section id="input-section" class="card fade-in">
+                <div class="instructions">
+                    <h2>Share their world.</h2>
+                    <p>Upload a messy drawing, a confusing report card, or a voice note from a moment of panic. We'll find the hidden brilliance.</p>
+                </div>
+
+                <div class="upload-area" id="drop-zone">
+                    <div class="upload-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                    </div>
+                    <span>Drag and drop a photo, audio note, or document here</span>
+                    <span class="or-separator">or</span>
+                    <label for="file-input" class="secondary-btn">Browse Files</label>
+                    <input type="file" id="file-input" accept="image/*, audio/*, application/pdf" multiple style="display: none;">
+                </div>
+                <div id="file-preview-list" class="file-list"></div>
+
+                <div class="input-group text-context">
+                    <label for="context-notes">Additional Context (Optional)</label>
+                    <textarea id="context-notes" rows="3" placeholder="Tell us what you're worried about or what you noticed..."></textarea>
+                </div>
+
+                <button id="analyze-btn" class="primary-btn full-width" disabled>Discover Their Potential</button>
+            </section>
+
+            <!-- LOADING STATE -->
+            <section id="loading-state" class="hidden">
+                <div class="spinner"></div>
+                <h2>Analyzing...</h2>
+                <p id="loading-text">Looking past the noise to find their true superpower...</p>
+            </section>
+
+            <!-- OUTPUT SECTION -->
+            <section id="output-section" class="hidden">
+                <div class="top-banner">
+                    <h2 class="superpower-badge" id="superpower-text">Creative Builder</h2>
+                    <p class="big-picture" id="big-picture-text">They learn by feeling the world in their hands. While traditional math might be tough, they are engineering marvels waiting to happen.</p>
+                </div>
+
+                <div class="traffic-lights-container">
+                    <!-- Green -->
+                    <div class="traffic-card green">
+                        <div class="traffic-header">
+                            <span class="dot green-dot"></span>
+                            <h3>Green Lights</h3>
+                            <span class="subtext">What they are amazing at</span>
+                        </div>
+                        <ul id="green-list"></ul>
+                    </div>
+                    <!-- Yellow -->
+                    <div class="traffic-card yellow">
+                        <div class="traffic-header">
+                            <span class="dot yellow-dot"></span>
+                            <h3>Yellow Flags</h3>
+                            <span class="subtext">Where they need extra support</span>
+                        </div>
+                        <ul id="yellow-list"></ul>
+                    </div>
+                    <!-- Red -->
+                    <div class="traffic-card red">
+                        <div class="traffic-header">
+                            <span class="dot red-dot"></span>
+                            <h3>Red Alerts</h3>
+                            <span class="subtext">Immediate things to protect them from</span>
+                        </div>
+                        <ul id="red-list"></ul>
+                    </div>
+                </div>
+
+                <div class="actions-section">
+                    <h2>Top 3 Actions to Take Today</h2>
+                    <p class="subtitle">Simple steps that will change their future.</p>
+                    <div class="actions-list" id="actions-list">
+                        <!-- Action cards injected here via JS -->
+                    </div>
+                </div>
+
+                <div class="verification-section">
+                    <div class="verify-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                            <path d="m9 12 2 2 4-4"></path>
+                        </svg>
+                    </div>
+                    <div class="verify-content">
+                        <h4>Guardian Verification Check</h4>
+                        <p id="verify-text">Cross-referenced school promise against their recent teacher turnover rate.</p>
+                    </div>
+                </div>
+
+                <button id="reset-btn" class="secondary-btn outline full-width mt-4">Analyze Another Path</button>
+            </section>
+        </main>
+    </div>
+
+    <!-- Audio Player for Voice Synthesizer -->
+    <div style="display: none;">
+        <audio id="tts-audio"></audio>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
