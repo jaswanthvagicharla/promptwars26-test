@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Astra Path - AI-powered educational psychologist using Google Gemini to discover hidden talents, find matching schools, and build career roadmaps for every child.">
+    <meta name="theme-color" content="#7C3AED">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src https://generativelanguage.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com; img-src 'self' data:;">
     <title>Astra Path - Universal Bridge for Human Potential</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -10,8 +13,20 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- Skip Navigation Link (Accessibility) -->
+    <a href="#main-content" class="skip-link" id="skip-nav">Skip to main content</a>
+
+    <!-- Screen Reader Announcer (ARIA Live Region) -->
+    <div id="sr-announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- Error Banner (Accessible) -->
+    <div id="error-banner" class="error-banner hidden" role="alert" aria-live="assertive" tabindex="-1">
+        <span id="error-text"></span>
+        <button onclick="this.parentElement.classList.add('hidden')" aria-label="Dismiss error">&times;</button>
+    </div>
+
     <!-- Animated Background Orbs -->
-    <div class="bg-orbs">
+    <div class="bg-orbs" aria-hidden="true">
         <div class="orb orb-1"></div>
         <div class="orb orb-2"></div>
         <div class="orb orb-3"></div>
@@ -19,9 +34,9 @@
 
     <div class="app-container">
         <!-- Top Navigation Bar -->
-        <nav class="top-nav">
+        <nav class="top-nav" role="navigation" aria-label="Main navigation">
             <div class="nav-brand">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <path d="M12 2L2 22l10-4 10 4L12 2z"></path>
                     <path d="m12 18 10 4"></path>
                     <path d="M2 22l10-4"></path>
@@ -29,140 +44,174 @@
                 <h1>Astra Path</h1>
             </div>
             <div class="nav-user">
-                <span class="nav-user-name" id="nav-user-name">Welcome</span>
-                <button class="logout-btn" id="logout-btn">Sign Out</button>
+                <span class="nav-user-name" id="nav-user-name" aria-live="polite">Welcome</span>
+                <button class="logout-btn" id="logout-btn" aria-label="Sign out of your account">Sign Out</button>
             </div>
         </nav>
 
-
-        <main class="main-content">
+        <main id="main-content" role="main">
             <!-- INPUT SECTION -->
-            <section id="input-section" class="card fade-in">
+            <section id="input-section" class="card fade-in" aria-labelledby="input-heading">
                 <div class="instructions">
-                    <h2>Share their world.</h2>
-                    <p>Upload a messy drawing, a confusing report card, or a voice note from a moment of panic. We'll find the hidden brilliance.</p>
+                    <h2 id="input-heading">Share their world.</h2>
+                    <p>Upload a messy drawing, a confusing report card, or a voice note. We'll find the hidden brilliance.</p>
                 </div>
 
-                <div class="upload-area" id="drop-zone">
-                    <div class="upload-icon">
+                <div class="upload-area" id="drop-zone" role="button" tabindex="0" aria-label="Upload files by clicking or dragging. Supports images, audio, and PDF files.">
+                    <div class="upload-icon" aria-hidden="true">
                         <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                             <polyline points="17 8 12 3 7 8"></polyline>
                             <line x1="12" y1="3" x2="12" y2="15"></line>
                         </svg>
                     </div>
-                    <span>Drag and drop a photo, audio note, or document here</span>
+                    <span>Drag and drop files here</span>
                     <span class="or-separator">or</span>
                     <label for="file-input" class="secondary-btn">Browse Files</label>
-                    <input type="file" id="file-input" accept="image/*, audio/*, application/pdf" multiple style="display: none;">
+                    <input type="file" id="file-input" accept="image/*,audio/*,application/pdf" multiple style="display:none;" aria-label="Select files to upload">
+                    <span class="upload-hint">Images, Audio, PDFs — Max 10MB each, up to 5 files</span>
                 </div>
-                <div id="file-preview-list" class="file-list"></div>
+                <div id="file-preview-list" class="file-list" role="list" aria-label="Uploaded files"></div>
+                <span id="file-count" class="file-count sr-only" aria-live="polite">0 file(s) ready</span>
 
-                <div class="input-group text-context">
-                    <label for="context-notes">Additional Context (Optional)</label>
-                    <textarea id="context-notes" rows="3" placeholder="Tell us what you're worried about or what you noticed..."></textarea>
+                <div class="input-group">
+                    <label for="context-notes">Parent's Concern (Optional but recommended)</label>
+                    <textarea id="context-notes" rows="4" placeholder="Example: My son loves sports but his math marks are dropping. He gets distracted in class. Budget is 1 Lakh/year. We live in Hyderabad." aria-describedby="context-help" data-testid="context-notes"></textarea>
+                    <small id="context-help" class="input-help">The more details you share, the better our analysis. Include interests, worries, budget, and location.</small>
                 </div>
 
-                <button id="analyze-btn" class="primary-btn full-width" disabled>Discover Their Potential</button>
+                <button id="analyze-btn" class="primary-btn full-width" disabled data-testid="analyze-btn" aria-describedby="analyze-help">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.21 1.21 0 0 0 1.72 0L21.64 5.36a1.21 1.21 0 0 0 0-1.72Z"></path><path d="m14 7 3 3"></path></svg>
+                    Discover Their Potential
+                </button>
+                <small id="analyze-help" class="input-help" style="text-align:center; display:block; margin-top:0.5rem;">Powered by Google Gemini 2.5 Flash — Multimodal AI</small>
             </section>
 
             <!-- LOADING STATE -->
-            <section id="loading-state" class="hidden">
-                <div class="spinner"></div>
+            <section id="loading-state" class="hidden" role="status" aria-live="polite" aria-label="Analysis in progress">
+                <div class="spinner" aria-hidden="true"></div>
                 <h2>Analyzing...</h2>
                 <p id="loading-text">Looking past the noise to find their true superpower...</p>
             </section>
 
             <!-- OUTPUT SECTION -->
-            <section id="output-section" class="hidden">
+            <section id="output-section" class="hidden" tabindex="-1" aria-labelledby="superpower-text">
                 <div class="top-banner">
-                    <h2 class="superpower-badge" id="superpower-text">Creative Builder</h2>
-                    <p class="big-picture" id="big-picture-text">They learn by feeling the world in their hands.</p>
+                    <h2 class="superpower-badge" id="superpower-text" data-testid="superpower">Creative Builder</h2>
+                    <p class="big-picture" id="big-picture-text" data-testid="big-picture">Analysis result will appear here.</p>
                 </div>
 
-                <div class="traffic-lights-container">
-                    <div class="traffic-card green">
+                <!-- Neurodivergence Assessment -->
+                <div class="neuro-section card fade-in" aria-labelledby="neuro-heading">
+                    <div class="neuro-icon" aria-hidden="true">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2Z"></path><path d="M12 8v4l3 3"></path></svg>
+                    </div>
+                    <div>
+                        <h3 id="neuro-heading">Neurodivergence Screening</h3>
+                        <p id="neuro-check-text" data-testid="neuro-check">Assessment pending...</p>
+                    </div>
+                </div>
+
+                <div class="traffic-lights-container" role="list" aria-label="Traffic light assessment">
+                    <div class="traffic-card green" role="listitem" aria-labelledby="green-heading">
                         <div class="traffic-header">
-                            <span class="dot green-dot"></span>
-                            <h3>Green Lights</h3>
+                            <span class="dot green-dot" aria-hidden="true"></span>
+                            <h3 id="green-heading">Green Lights</h3>
                             <span class="subtext">What they are amazing at</span>
                         </div>
-                        <ul id="green-list"></ul>
+                        <ul id="green-list" data-testid="green-list"></ul>
                     </div>
-                    <div class="traffic-card yellow">
+                    <div class="traffic-card yellow" role="listitem" aria-labelledby="yellow-heading">
                         <div class="traffic-header">
-                            <span class="dot yellow-dot"></span>
-                            <h3>Yellow Flags</h3>
+                            <span class="dot yellow-dot" aria-hidden="true"></span>
+                            <h3 id="yellow-heading">Yellow Flags</h3>
                             <span class="subtext">Where they need extra support</span>
                         </div>
-                        <ul id="yellow-list"></ul>
+                        <ul id="yellow-list" data-testid="yellow-list"></ul>
                     </div>
-                    <div class="traffic-card red">
+                    <div class="traffic-card red" role="listitem" aria-labelledby="red-heading">
                         <div class="traffic-header">
-                            <span class="dot red-dot"></span>
-                            <h3>Red Alerts</h3>
+                            <span class="dot red-dot" aria-hidden="true"></span>
+                            <h3 id="red-heading">Red Alerts</h3>
                             <span class="subtext">Immediate things to protect them from</span>
                         </div>
-                        <ul id="red-list"></ul>
+                        <ul id="red-list" data-testid="red-list"></ul>
                     </div>
                 </div>
 
-                <div class="actions-section">
-                    <h2>Top 3 Actions to Take Today</h2>
+                <div class="actions-section" aria-labelledby="actions-heading">
+                    <h2 id="actions-heading">Top 3 Actions to Take Today</h2>
                     <p class="subtitle">Simple steps that will change their future.</p>
-                    <div class="actions-list" id="actions-list"></div>
+                    <div class="actions-list" id="actions-list" role="list" aria-label="Recommended actions"></div>
                 </div>
 
-                <div class="verification-section">
-                    <div class="verify-icon">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                            <path d="m9 12 2 2 4-4"></path>
-                        </svg>
+                <!-- Financial Reality Check -->
+                <div class="financial-section card fade-in" aria-labelledby="financial-heading">
+                    <div class="financial-icon" aria-hidden="true">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                    </div>
+                    <div>
+                        <h3 id="financial-heading">Financial Reality Check</h3>
+                        <p id="financial-text" data-testid="financial-check">Hidden cost analysis pending...</p>
+                    </div>
+                </div>
+
+                <div class="verification-section" aria-labelledby="verify-heading">
+                    <div class="verify-icon" aria-hidden="true">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="m9 12 2 2 4-4"></path></svg>
                     </div>
                     <div class="verify-content">
-                        <h4>Guardian Verification Check</h4>
-                        <p id="verify-text"></p>
+                        <h4 id="verify-heading">Guardian Verification Check</h4>
+                        <p id="verify-text" data-testid="verify-text"></p>
                     </div>
                 </div>
 
-                <!-- SCHOOL MATCHER -->
-                <div class="card fade-in" id="school-matcher-form" style="margin-top: 3rem; border-top: 3px solid var(--accent-primary);">
-                    <h2>Step 2: Find the Perfect School</h2>
-                    <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Now that we know their superpower, let's find the right environment. We'll search Google Reviews to verify safety and budget match.</p>
+                <!-- SCHOOL MATCHER (Google Search Grounding) -->
+                <div class="card fade-in school-matcher" id="school-matcher-form" aria-labelledby="school-heading">
+                    <h2 id="school-heading">Step 2: Find the Perfect School</h2>
+                    <p class="subtitle">We search Google Reviews in real-time to find safe, supportive schools within your budget.</p>
 
-                    <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem;">
-                        <div class="input-group" style="flex: 1; min-width: 200px; margin-bottom: 0;">
-                            <label for="budget-input">Parent's Budget</label>
-                            <input type="text" id="budget-input" placeholder="e.g. 1 Lakh per year">
+                    <div class="school-inputs">
+                        <div class="input-group">
+                            <label for="budget-input">Annual Budget</label>
+                            <input type="text" id="budget-input" placeholder="e.g. 1 Lakh per year" data-testid="budget-input" aria-required="true">
                         </div>
-                        <div class="input-group" style="flex: 1; min-width: 200px; margin-bottom: 0;">
+                        <div class="input-group">
                             <label for="location-input">City / Area</label>
-                            <input type="text" id="location-input" placeholder="e.g. Hyderabad">
+                            <input type="text" id="location-input" placeholder="e.g. Hyderabad" data-testid="location-input" aria-required="true">
                         </div>
                     </div>
-                    <button id="find-schools-btn" class="primary-btn full-width">Search Verified Schools via Google</button>
+                    <button id="find-schools-btn" class="primary-btn full-width" data-testid="find-schools-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        Search Verified Schools via Google
+                    </button>
+                    <small class="input-help" style="text-align:center; display:block; margin-top:0.5rem;">Powered by Google Search Grounding — Real-time web search</small>
 
-                    <div id="school-loading-state" class="hidden" style="text-align: center; margin-top: 2rem;">
-                        <div class="spinner" style="width: 32px; height: 32px; border-width: 3px;"></div>
+                    <div id="school-loading-state" class="hidden" role="status" aria-live="polite" style="text-align:center; margin-top:1.5rem;">
+                        <div class="spinner" style="width:32px; height:32px; border-width:3px;" aria-hidden="true"></div>
                         <p>Searching Google Reviews for safe schools...</p>
                     </div>
                 </div>
 
                 <!-- SCHOOL RESULTS -->
-                <div id="school-results-section" class="hidden" style="margin-top: 3rem;">
-                    <h2>Recommended Schools</h2>
-                    <div class="actions-list" id="schools-list" style="margin-bottom: 2rem;"></div>
+                <div id="school-results-section" class="hidden" aria-labelledby="results-heading" style="margin-top:2rem;">
+                    <h2 id="results-heading">Recommended Schools</h2>
+                    <div class="actions-list" id="schools-list" role="list" aria-label="School recommendations"></div>
 
-                    <div class="card" style="background: var(--gradient-brand); border: none;">
-                        <h2 style="color: white; margin-bottom: 0.5rem;">10-Year Career Horizon</h2>
-                        <p id="career-guide-text" style="color: rgba(255,255,255,0.85); line-height: 1.8;">Based on their interests, here is what the future might look like...</p>
+                    <div class="career-card" aria-labelledby="career-heading">
+                        <h2 id="career-heading">10-Year Career Horizon</h2>
+                        <p id="career-guide-text" data-testid="career-text">Career trajectory will appear here...</p>
                     </div>
                 </div>
 
-                <button id="reset-btn" class="secondary-btn full-width mt-4">Start Over with Another Child</button>
+                <button id="reset-btn" class="secondary-btn full-width mt-4" data-testid="reset-btn" aria-label="Start a new analysis">Start Over with Another Child</button>
             </section>
         </main>
+
+        <footer class="app-footer" role="contentinfo">
+            <p>Powered by <strong>Google Gemini 2.5 Flash</strong> &middot; <strong>Firebase Authentication</strong> &middot; <strong>Google Search Grounding</strong> &middot; <strong>Google Fonts</strong> &middot; <strong>Web Speech API</strong></p>
+            <a href="tests.html" class="test-link" aria-label="Run automated tests">Run Tests</a>
+        </footer>
     </div>
 
     <script src="app.js"></script>

@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sign in to Astra Path - AI-powered educational guidance using Google Gemini.">
+    <meta name="theme-color" content="#7C3AED">
     <title>Astra Path — Sign In</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -10,16 +12,19 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="auth-body">
-    <!-- Animated Background Orbs -->
-    <div class="bg-orbs">
+    <!-- Skip Navigation -->
+    <a href="#login-form" class="skip-link">Skip to login form</a>
+
+    <!-- Animated Background -->
+    <div class="bg-orbs" aria-hidden="true">
         <div class="orb orb-1"></div>
         <div class="orb orb-2"></div>
         <div class="orb orb-3"></div>
     </div>
 
-    <div class="auth-container">
+    <div class="auth-container" role="main">
         <!-- Left Panel: Branding -->
-        <div class="auth-brand">
+        <div class="auth-brand" aria-hidden="true">
             <div class="brand-content">
                 <svg class="brand-logo" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M12 2L2 22l10-4 10 4L12 2z"></path>
@@ -29,18 +34,11 @@
                 <h1>Astra Path</h1>
                 <p class="brand-tagline">The Universal Bridge for Human Potential</p>
                 <div class="brand-features">
-                    <div class="brand-feature">
-                        <span class="feature-icon">🧒</span>
-                        <span>Discover hidden talents in every child</span>
-                    </div>
-                    <div class="brand-feature">
-                        <span class="feature-icon">🏫</span>
-                        <span>Find schools that fit, not pressure</span>
-                    </div>
-                    <div class="brand-feature">
-                        <span class="feature-icon">🛡️</span>
-                        <span>Guardian-verified safety checks</span>
-                    </div>
+                    <div class="brand-feature"><span class="feature-icon">🧒</span><span>AI discovers hidden talents beyond grades</span></div>
+                    <div class="brand-feature"><span class="feature-icon">🏫</span><span>Google-verified school recommendations</span></div>
+                    <div class="brand-feature"><span class="feature-icon">🛡️</span><span>Guardian safety & financial checks</span></div>
+                    <div class="brand-feature"><span class="feature-icon">🔊</span><span>Voice-first: listen, don't read</span></div>
+                    <div class="brand-feature"><span class="feature-icon">🧠</span><span>Neurodivergence screening included</span></div>
                 </div>
             </div>
         </div>
@@ -48,50 +46,44 @@
         <!-- Right Panel: Auth Form -->
         <div class="auth-form-panel">
             <div class="auth-form-wrapper">
-                <!-- Tab Switcher -->
-                <div class="auth-tabs">
-                    <button class="auth-tab active" id="login-tab" onclick="switchTab('login')">Sign In</button>
-                    <button class="auth-tab" id="register-tab" onclick="switchTab('register')">Create Account</button>
+                <div class="auth-tabs" role="tablist" aria-label="Authentication method">
+                    <button class="auth-tab active" id="login-tab" role="tab" aria-selected="true" aria-controls="login-form" onclick="switchTab('login')">Sign In</button>
+                    <button class="auth-tab" id="register-tab" role="tab" aria-selected="false" aria-controls="register-form" onclick="switchTab('register')">Create Account</button>
                 </div>
 
-                <!-- Login Form -->
-                <form id="login-form" class="auth-form" onsubmit="return false;">
+                <form id="login-form" class="auth-form" onsubmit="return false;" aria-label="Sign in form" role="tabpanel" aria-labelledby="login-tab">
                     <div class="auth-input-group">
                         <label for="login-email">Email</label>
-                        <input type="email" id="login-email" placeholder="you@example.com" required autocomplete="email">
+                        <input type="email" id="login-email" placeholder="you@example.com" required autocomplete="email" data-testid="login-email">
                     </div>
                     <div class="auth-input-group">
                         <label for="login-password">Password</label>
-                        <input type="password" id="login-password" placeholder="Enter your password" required autocomplete="current-password">
+                        <input type="password" id="login-password" placeholder="Enter your password" required autocomplete="current-password" minlength="6" data-testid="login-password">
                     </div>
-                    <button type="submit" class="auth-submit-btn" id="login-btn">Sign In</button>
+                    <button type="submit" class="auth-submit-btn" id="login-btn" data-testid="login-btn">Sign In</button>
                 </form>
 
-                <!-- Register Form -->
-                <form id="register-form" class="auth-form hidden" onsubmit="return false;">
+                <form id="register-form" class="auth-form hidden" onsubmit="return false;" aria-label="Create account form" role="tabpanel" aria-labelledby="register-tab">
                     <div class="auth-input-group">
                         <label for="register-name">Full Name</label>
-                        <input type="text" id="register-name" placeholder="Your name" required>
+                        <input type="text" id="register-name" placeholder="Your name" required data-testid="register-name">
                     </div>
                     <div class="auth-input-group">
                         <label for="register-email">Email</label>
-                        <input type="email" id="register-email" placeholder="you@example.com" required autocomplete="email">
+                        <input type="email" id="register-email" placeholder="you@example.com" required autocomplete="email" data-testid="register-email">
                     </div>
                     <div class="auth-input-group">
                         <label for="register-password">Password</label>
-                        <input type="password" id="register-password" placeholder="At least 6 characters" required minlength="6" autocomplete="new-password">
+                        <input type="password" id="register-password" placeholder="At least 6 characters" required minlength="6" autocomplete="new-password" data-testid="register-password">
                     </div>
-                    <button type="submit" class="auth-submit-btn" id="register-btn">Create Account</button>
+                    <button type="submit" class="auth-submit-btn" id="register-btn" data-testid="register-btn">Create Account</button>
                 </form>
 
-                <div class="auth-divider">
-                    <span>or continue with</span>
-                </div>
+                <div class="auth-divider"><span>or continue with</span></div>
 
-                <!-- Social Login Buttons -->
                 <div class="social-buttons">
-                    <button class="social-btn google-btn" id="google-signin-btn">
-                        <svg width="20" height="20" viewBox="0 0 24 24">
+                    <button class="social-btn google-btn" id="google-signin-btn" data-testid="google-signin-btn" aria-label="Sign in with your Google account">
+                        <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
                             <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
                             <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
                             <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
@@ -101,8 +93,7 @@
                     </button>
                 </div>
 
-                <!-- Error Message Area -->
-                <div id="auth-error" class="auth-error hidden"></div>
+                <div id="auth-error" class="auth-error hidden" role="alert" aria-live="assertive" tabindex="-1"></div>
             </div>
         </div>
     </div>
